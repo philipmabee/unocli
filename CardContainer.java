@@ -4,12 +4,15 @@ import java.util.Collections;
 public class CardContainer {
 	private Vector<Card> cards = new Vector<Card>();
 
-	// NOTE: debug
 	public void printContents() {
 		for (int i = 0; i < cards.size(); i++) {
 			System.out.print(cards.get(i).getCardVal() + " ");
 		}
 		System.out.println();
+	}
+
+	public int getSize() {
+		return cards.size();	
 	}
 
 	public Card getCard(int index) {

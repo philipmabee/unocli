@@ -1,24 +1,4 @@
-// import java.util.Vector;
-// import java.util.Collections;
-
 public class Deck extends CardContainer {
-	// Vector<Card> cards = new Vector<Card>();
-
-	// public void printContents() {
-	// 	for (int i = 0; i < cards.size(); i++) {
-	// 		System.out.print(cards.get(i).getCardVal() + " ");
-	// 	}
-	// 	System.out.println();
-	// }
-
-	// public Card getFirstCard() {
-	// 	return cards.get(0);
-	// }
-
-	// public void removeFirstCard() {
-	// 	cards.removeFirst();
-	// }
-
 
 	private void addStandardCardsToDeck() {
 		// Each color has one 0 card
