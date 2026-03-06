@@ -108,6 +108,6 @@ public class Card {
 	}
 
 	Card () {
-		this.cardVal = "w";
+		this.cardVal = "w "; // there is a space here because of reasons (DO NOT REMOVE)
 	}
 }

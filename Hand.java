@@ -21,6 +21,31 @@ public class Hand extends CardContainer {
 		deck.removeFirstCard();
 	}
 
+	// gets the card at index and puts it into discard pile
+	// returns 0 if successfull
+	// returns 1 if cannot play that card
+	// returns 2 if invalid index
+	// TODO: make this return an enum
+	public int playCard(int index) {
+		if (index > getSize() - 1 || index < 0) {
+			return 2;
+		}
+
+		Card.Color cardColor = getCard(index).getCardColor();
+		int cardNum = getCard(index).getCardNumber();
+		
+		Card currGameCard = discardPile.getCard(discardPile.getSize() - 1);
+		
+		if (cardColor == currGameCard.getCardColor() || cardNum == currGameCard.getCardNumber() || cardColor == Card.Color.WILD) {
+			discardPile.addCard(getCard(index));
+			removeCardAtIndex(index);
+
+			return 0;
+		}
+
+		return 1;
+	}
+
 	// draws 7 cards
 	Hand(Deck deck, DiscardPile discardPile) {
 		this.deck = deck;

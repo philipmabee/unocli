@@ -61,4 +61,33 @@ public class UserInput {
 		System.out.print("\033[H\033[2J"); // TODO: find a better way to clear the screen
 		System.out.flush();
 	}
+
+	// will print error if the arc count given is not n
+	// returns the difference in the ammount of arguments needed or not needed
+	public static int AssertArgC(String[] userInput, int n) {
+		// returns diff between args given and n
+		int diff = userInput.length - n;
+
+		if (diff > 0) {
+			printTextWithColor("Too many args given for " + userInput[0] + "\n", Color.RED);
+		} else if (diff < 0) {
+			printTextWithColor("not enough args for " + userInput[0] + "\n", Color.RED);
+		}
+
+		return diff;
+	}
+	
+	// will print error if the arc count given is less than n
+	// if argc is less than n than will return args needed
+	public static int AssertMinArgC(String[] userInput, int n) {
+		int diff = userInput.length - n;
+		if (diff < 0) {
+			printTextWithColor("not enough args for " + userInput[0] + "\n", Color.RED);
+			return diff * -1;
+		}
+
+		return 0;
+	}
+
+
 }
