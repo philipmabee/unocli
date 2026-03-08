@@ -37,6 +37,9 @@ public class Hand extends CardContainer {
 		Card currGameCard = discardPile.getCard(discardPile.getSize() - 1);
 		
 		if (cardColor == currGameCard.getCardColor() || cardNum == currGameCard.getCardNumber() || cardColor == Card.Color.WILD) {
+
+			UserInput.printTextWithColor( "You played '" + getCard(index).getCardVal() + "'" + "\n", UserInput.Color.WHITE);
+
 			discardPile.addCard(getCard(index));
 			removeCardAtIndex(index);
 
