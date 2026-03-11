@@ -17,13 +17,76 @@ public class Card {
 
 	private String cardVal = "";
 
-	// returns the cards value as a string
-	// ex. G1, B4, Y+2, W, W+4, RR
+	/** 
+	 * returns the cards value as a string<br>
+	 * ex. G1, B4, Y+2, W, W+4, RR
+	*/
 	public String getCardVal() {
 		return cardVal;
 	}
 
-	// returns the current cards color
+
+	/** 
+	* prints the card with colored text rather than a char indicating the color
+	*/
+	public void printCardWithColor() {
+		Card.Color cardColor = getCardColor();
+		byte cardNum = getCardNumber();
+		UserInput.Color printColor;		
+
+		switch (cardColor) {
+			case Card.Color.BLUE:
+				printColor = UserInput.Color.BLUE;
+				break;
+			case Card.Color.YELLOW:
+				printColor = UserInput.Color.YELLOW;
+				break;
+			case Card.Color.GREEN:
+				printColor = UserInput.Color.GREEN;
+				break;
+			case Card.Color.RED:
+				printColor = UserInput.Color.RED;
+				break;
+			case Card.Color.WILD:
+				printColor = UserInput.Color.WHITE;
+				break;
+			default:
+				throw new Error("Unhandled color");
+		}
+
+		if (cardNum != -1) {
+			UserInput.printTextWithColor(cardNum + "", printColor);
+			return;
+		}
+
+		switch (getCardSpecialType()) {
+			case Card.SpecialType.NONE:
+				UserInput.printTextWithColor("w", printColor);
+				return;
+			case Card.SpecialType.DRAW2:
+				UserInput.printTextWithColor("+2", printColor);
+				return;
+			case Card.SpecialType.DRAW4:
+				UserInput.printTextWithColor("+4", printColor);
+				return;
+			case Card.SpecialType.SKIP:
+				UserInput.printTextWithColor("S", printColor);
+				return;
+			case Card.SpecialType.REVERSE:
+				UserInput.printTextWithColor("R", printColor);
+				return;
+		}
+	}
+
+
+
+
+
+
+	/**
+	 * @return the card color in the Color enum
+	 * @throws Error if the cards value is invalid
+	*/
 	public Color getCardColor() {
 		switch (cardVal.charAt(0)) {
 			case 'b':
@@ -41,8 +104,10 @@ public class Card {
 		}
 	}
 
-	// returns the current card number
-	// if card does not have a number that it will return -1
+	/** 
+	 * @return the current card number.<br>
+	 * if the card does not have a number than it will return -1
+	*/
 	public byte getCardNumber() {
 		if ((int) cardVal.charAt(1) < (int) '0' || (int) cardVal.charAt(1) > '9') {
 			return -1;
@@ -51,6 +116,10 @@ public class Card {
 		return (byte) ((int) cardVal.charAt(1) - (int) '0');
 	}
 
+	/** 
+	 * @return the current card special type<br>
+	 * if card does not have a special type than will return NONE 
+	*/ 
 	public SpecialType getCardSpecialType() {
 		switch (cardVal.charAt(1)) {
 			case '+':
@@ -64,64 +133,65 @@ public class Card {
 				return SpecialType.NONE;
 		}
 	}
-		Card (byte num, Color color) {
-			switch (color) {
-				case BLUE:
-					this.cardVal += 'b';
-					break;
-				case YELLOW:
-					this.cardVal += 'y';
-					break;
-				case GREEN:
-					this.cardVal += 'g';
-					break;
-				case RED:
-					this.cardVal += 'r';
-					break;
-				case WILD:
-					this.cardVal += 'w';
-					break;
-			}
-			this.cardVal += num;
+
+	Card (byte num, Color color) {
+		switch (color) {
+			case BLUE:
+				this.cardVal += 'b';
+				break;
+			case YELLOW:
+				this.cardVal += 'y';
+				break;
+			case GREEN:
+				this.cardVal += 'g';
+				break;
+			case RED:
+				this.cardVal += 'r';
+				break;
+			case WILD:
+				this.cardVal += 'w';
+				break;
+		}
+		this.cardVal += num;
+	}
+
+	Card (SpecialType specialType, Color color) {
+		switch (color) {
+			case BLUE:
+				this.cardVal += 'b';
+				break;
+			case YELLOW:
+				this.cardVal += 'y';
+				break;
+			case GREEN:
+				this.cardVal += 'g';
+				break;
+			case RED:
+				this.cardVal += 'r';
+				break;
+			case WILD:
+				this.cardVal += 'w';
+				break;
 		}
 
-		Card (SpecialType specialType, Color color) {
-			switch (color) {
-				case BLUE:
-					this.cardVal += 'b';
-					break;
-				case YELLOW:
-					this.cardVal += 'y';
-					break;
-				case GREEN:
-					this.cardVal += 'g';
-					break;
-				case RED:
-					this.cardVal += 'r';
-					break;
-				case WILD:
-					this.cardVal += 'w';
-					break;
-			}
-
-			switch (specialType) {
-				case SpecialType.REVERSE:
-					cardVal += 'R';
-					break;
-				case SpecialType.SKIP:
-					cardVal += 'S';
-					break;
-				case SpecialType.DRAW2:
-					cardVal += "+2";
-					break;
-				case SpecialType.DRAW4:
-					cardVal += "+4";
-					break;
-			}
-
+		switch (specialType) {
+			case SpecialType.REVERSE:
+				cardVal += 'R';
+				break;
+			case SpecialType.SKIP:
+				cardVal += 'S';
+				break;
+			case SpecialType.DRAW2:
+				cardVal += "+2";
+				break;
+			case SpecialType.DRAW4:
+				cardVal += "+4";
+				break;
 		}
 
-		Card () {
-			this.cardVal = "w "; // there is a space here because of reasons (DO NOT REMOVE)
-		}
+	}
+
+	Card () {
+		this.cardVal = "w "; // there is a space here because of reasons (DO NOT REMOVE)
+	}
 }
