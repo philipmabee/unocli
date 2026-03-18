@@ -2,6 +2,9 @@ import java.util.Vector;
 
 class GameLogic {
 
+	private static int currHandTrunIndex = 0;
+	private static boolean handTurnDirection = true; // true incresed currHandTurnIndex. false does the opposite
+
 	public static void printCurrentCardInfo(DiscardPile discardPile) {
 		UserInput.printTextWithColor("the current card is ", UserInput.Color.WHITE);
 		discardPile.getCard(discardPile.getSize() - 1).printCardWithColor();
@@ -22,8 +25,7 @@ class GameLogic {
 
 	// plays selected card(s) (will only play card if card is valid)
 	// returns the ammount of cards successfully played
-	public static int playCard(Hand player, DiscardPile discardPile, String[] userInput) {
-			// TODO: change player variable to "hand"
+	public static int playCard(Hand player, DiscardPile discardPile, String[] userInput, int numOfHands) {
 		if (UserInput.AssertMinArgC(userInput, 2) != 0) return 0;
 
 		int[] cardIndex = new int[userInput.length - 1];
@@ -62,7 +64,7 @@ class GameLogic {
 			}
 
 
-			switch (player.playCard(cardIndex[j] - sub)) {
+			switch (player.playCard(cardIndex[j] - sub, numOfHands)) {
 				case 1:
 					UserInput.printTextWithColor("cannot play " + player.getCard(cardIndex[j] - sub).getCardVal() + "\n", UserInput.Color.RED);
 					break;
@@ -77,19 +79,72 @@ class GameLogic {
 		return vec.size();
 	}
 
-	// 
-	// public static void handleCardSideEffect(Card card, ) {
-	// 	switch (card.getCardSpecialType()) {
-	// 		case Card.SpecialType.SKIP:
-	// 			break;
-	// 		case Card.SpecialType.REVERSE:
-	// 			break;
-	// 		case Card.SpecialType.DRAW2:
-	// 			break;
-	// 		case Card.SpecialType.DRAW4:
-	// 			break;
-	// 		case Card.SpecialType.NONE:
-	// 			break;
-	// 	}
-	// }
+	public static int getCurrHandTurn() {
+		return currHandTrunIndex;
+	}
+
+	public static int getNextHandTurn(int numOfHands) {
+		if (handTurnDirection) {
+			if (currHandTrunIndex == numOfHands - 1) {
+				return 0;
+			}
+			return currHandTrunIndex + 1;
+		}
+		else {
+			if (currHandTrunIndex == 0) {
+				return numOfHands - 1;
+			}
+			return currHandTrunIndex - 1;
+		}
+	}
+
+	public static String getCurrHandTurnName(Hand[] hands) {
+		return hands[currHandTrunIndex].getName();
+	}
+
+	/**
+	 * changes the current turn to the next one depending on direction going.
+	*/
+	public static void changeHandTurn(int numOfHands) {
+		if (handTurnDirection) {
+			if (currHandTrunIndex == numOfHands - 1) {
+				currHandTrunIndex = 0;
+				return;
+			}
+			currHandTrunIndex ++;
+		}
+		else {
+			if (currHandTrunIndex == 0) {
+				currHandTrunIndex = numOfHands - 1;
+				return;
+			}
+			currHandTrunIndex --;
+		}
+	}
+	// TODO: move hands to GameLogic
+
+	public static void handleCardSideEffect(Card card, int numOfHands) {
+		switch (card.getCardSpecialType()) {
+			case Card.SpecialType.SKIP:
+				changeHandTurn(numOfHands);
+				break;
+			case Card.SpecialType.REVERSE:
+				handTurnDirection = !handTurnDirection;
+				break;
+			case Card.SpecialType.DRAW2:
+				break;
+			case Card.SpecialType.DRAW4:
+				break;
+			case Card.SpecialType.NONE:
+				break;
+		}
+
+		switch (card.getCardColor()) {
+			case Card.Color.WILD:
+				break;
+			default:
+				break;
+		}
+	}
+
 }

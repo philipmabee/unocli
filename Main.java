@@ -27,21 +27,14 @@ public class Main {
 		UserInput.printTextWithColor("press h for help\n\n" , UserInput.Color.MAGENTA);
 		GameLogic.printCurrentCardInfo(discardPile);
 
-		int currHandTurn = 0;
 		while (true) {
-			// System.out.println(currHandTurn);
-			if (hands[currHandTurn].getName().equals("You")) {
+			if (GameLogic.getCurrHandTurnName(hands).equals("You")) {
 				handlePlayersTurn(player, discardPile, hands);
 			} else {
-				handleBotsTurn(hands[currHandTurn]);
+				handleBotsTurn(hands[GameLogic.getCurrHandTurn()], hands.length);
 			}
 
-			if (currHandTurn == hands.length - 1) {
-				currHandTurn = 0;
-				continue;
-			}
-			currHandTurn ++;
-
+			GameLogic.changeHandTurn(hands.length);
 		}
 	}
 
@@ -127,7 +120,7 @@ public class Main {
 
 				case "play":
 				case "p":
-					if (GameLogic.playCard(player, discardPile, userInput) != 0) return;
+					if (GameLogic.playCard(player, discardPile, userInput, hands.length) != 0) return;
 					break;
 
 				case "draw":
@@ -177,7 +170,7 @@ public class Main {
 		}
 	}
 
-	public static void handleBotsTurn(Hand bot) {
+	public static void handleBotsTurn(Hand bot, int numOfHands) {
 		Vector<Integer> playableCards = new Vector<>();
 
 		// add playable card index
@@ -195,7 +188,7 @@ public class Main {
 
 		// playable card size == 1
 		else if (playableCards.size() == 1) {
-			bot.playCard(playableCards.get(0));
+			bot.playCard(playableCards.get(0), numOfHands);
 			return;
 		}
 
@@ -203,7 +196,7 @@ public class Main {
 		Random rand = new Random();
 		int randNum = rand.nextInt(playableCards.size() - 1);
 
-		bot.playCard(playableCards.get(randNum));
+		bot.playCard(playableCards.get(randNum), numOfHands);
 	}
 
 	public static int getNumOfBots() {

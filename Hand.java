@@ -35,21 +35,20 @@ public class Hand extends CardContainer {
 	 * 1 if cannot play that card<br>
 	 * 2 if invalid index
 	*/
-	public int playCard(int index) {
+	public int playCard(int index, int numOfHands) {
 		if (index > getSize() - 1 || index < 0) {
 			return 2;
 		}
 
-		// if (cardColor == currGameCard.getCardColor() || cardNum == currGameCard.getCardNumber() || cardColor == Card.Color.WILD) {
-			if (canPlayCard(index)) {
-
+		if (canPlayCard(index)) {
 			UserInput.printTextWithColor(name + " played ", UserInput.Color.WHITE);
 			getCard(index).printCardWithColor();
 			System.out.println();
-			// UserInput.printTextWithColor( "You played '" + getCard(index).getCardVal() + "'" + "\n", UserInput.Color.WHITE);
 
 			discardPile.addCard(getCard(index));
 			removeCardAtIndex(index);
+
+			GameLogic.handleCardSideEffect(discardPile.getCard(discardPile.getSize() -1), numOfHands);
 
 			return 0;
 		}
