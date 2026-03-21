@@ -1,6 +1,5 @@
 import java.util.Random;
 import java.util.Vector;
-// TODO: add drawing cards
 
 public class Main {
 	public static void main(String[] args) {
@@ -60,7 +59,32 @@ public class Main {
 	}
 
 	public static void printHelp() {
-		UserInput.printTextWithColor("Commands (only work in game): \n", UserInput.Color.CYAN);
+		UserInput.printTextWithColor("How To Play:\n", UserInput.Color.CYAN);
+		UserInput.printTextWithColor("  The goal of this game is to remove all the cards in your hand.\n", UserInput.Color.WHITE);
+		UserInput.printTextWithColor("  You can play a card if the card number or color matches the previously played card.\n\n", UserInput.Color.WHITE);
+		UserInput.printTextWithColor("Cards:\n", UserInput.Color.CYAN);
+
+		UserInput.printTextWithColor("  '", UserInput.Color.WHITE);
+		UserInput.printTextWithColor("w", UserInput.Color.GREEN);
+		UserInput.printTextWithColor("'  can be played at any time. When played you can change what the color is\n", UserInput.Color.WHITE);
+
+		UserInput.printTextWithColor("  '", UserInput.Color.WHITE);
+		UserInput.printTextWithColor("S", UserInput.Color.GREEN);
+		UserInput.printTextWithColor("'  will skip the next players turn\n", UserInput.Color.WHITE);
+
+		UserInput.printTextWithColor("  '", UserInput.Color.WHITE);
+		UserInput.printTextWithColor("R", UserInput.Color.GREEN);
+		UserInput.printTextWithColor("'  will reverse the order of who gets to play next\n", UserInput.Color.WHITE);
+
+		UserInput.printTextWithColor("  '", UserInput.Color.WHITE);
+		UserInput.printTextWithColor("+2", UserInput.Color.GREEN);
+		UserInput.printTextWithColor("' will make the next player draw 2 cards\n", UserInput.Color.WHITE);
+
+		UserInput.printTextWithColor("  '", UserInput.Color.WHITE);
+		UserInput.printTextWithColor("+4", UserInput.Color.GREEN);
+		UserInput.printTextWithColor("' can be played at any time. Will make the next player draw 4 cards. You also change what the color is\n\n", UserInput.Color.WHITE);
+
+		UserInput.printTextWithColor("Commands: \n", UserInput.Color.CYAN);
 
 		UserInput.printTextWithColor("  l", UserInput.Color.GREEN);
 		UserInput.printTextWithColor(":", UserInput.Color.WHITE);
@@ -72,7 +96,7 @@ public class Main {
 
 		UserInput.printTextWithColor("  p <pos>", UserInput.Color.GREEN);
 		UserInput.printTextWithColor(":", UserInput.Color.WHITE);
-		UserInput.printTextWithColor("     play card\n", UserInput.Color.CYAN);
+		UserInput.printTextWithColor("     play card (you can play multiple cards)\n", UserInput.Color.CYAN);
 
 		UserInput.printTextWithColor("  d", UserInput.Color.GREEN);
 		UserInput.printTextWithColor(":", UserInput.Color.WHITE);
@@ -147,6 +171,8 @@ public class Main {
 					UserInput.clearScreen();
 					break;
 
+				case "quit":
+				case "exit":
 				case "q": // quit
 					if (UserInput.AssertArgC(userInput, 1) != 0) break;
 					// TODO: are you sure?
