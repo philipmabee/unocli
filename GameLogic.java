@@ -123,7 +123,7 @@ class GameLogic {
 	}
 	// TODO: move hands to GameLogic
 
-	public static void handleCardSideEffect(Card card, int numOfHands) {
+	public static void handleCardSideEffect(Card card, int numOfHands, Hand hand, DiscardPile discardPile) {
 		switch (card.getCardSpecialType()) {
 			case Card.SpecialType.SKIP:
 				changeHandTurn(numOfHands);
@@ -141,9 +141,33 @@ class GameLogic {
 
 		switch (card.getCardColor()) {
 			case Card.Color.WILD:
+				if (hand.getName() == "You") {
+					Card.Color newColor = getNewColorFromPlayer();
+					discardPile.getCard(discardPile.getSize() - 1).changeCardColor(newColor);
+				}
 				break;
 			default:
 				break;
+		}
+	}
+
+	private static Card.Color getNewColorFromPlayer() {
+		UserInput.printTextWithColor("What would you like the color to be? (r, b, g, y)\n", UserInput.Color.WHITE);
+		while (true) {
+			String userInput = UserInput.getUserInput("> ");
+			switch (userInput) {
+				case "r":
+					return Card.Color.RED;
+				case "b":
+					return Card.Color.BLUE;
+				case "g":
+					return Card.Color.GREEN;
+				case "y":
+					return Card.Color.YELLOW;
+				default:
+					UserInput.printTextWithColor("Invalid User Input\n", UserInput.Color.RED);
+					break;
+			}
 		}
 	}
 

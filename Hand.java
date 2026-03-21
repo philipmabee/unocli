@@ -16,8 +16,19 @@ public class Hand extends CardContainer {
 			}
 
 			while (discardPile.getSize() > 1) {
+				Card currCard = discardPile.getCard(1);
+				if (currCard.getCardSpecialType() == Card.SpecialType.DRAW4 || (currCard.getCardSpecialType() == Card.SpecialType.NONE && currCard.getCardNumber() == -1)) {
+					System.out.println("THE FUNCTION IS RUNNING"); // TODO: test this
+					System.out.println("card was: " + currCard.getCardVal());
+					System.out.println("card is now: " + new Card(currCard.getCardSpecialType(), Card.Color.WILD).getCardVal() + "\n\n");
+					deck.addCard(new Card(currCard.getCardSpecialType(), Card.Color.WILD));
+					discardPile.removeCardAtIndex(1);
+					continue;
+				}
+
+
 				deck.addCard(discardPile.getCard(1));
-				removeCardAtIndex(1);
+				discardPile.removeCardAtIndex(1);
 			}
 			deck.shuffleCards();
 			return;
@@ -48,7 +59,7 @@ public class Hand extends CardContainer {
 			discardPile.addCard(getCard(index));
 			removeCardAtIndex(index);
 
-			GameLogic.handleCardSideEffect(discardPile.getCard(discardPile.getSize() -1), numOfHands);
+			GameLogic.handleCardSideEffect(discardPile.getCard(discardPile.getSize() -1), numOfHands, this, discardPile);
 
 			return 0;
 		}

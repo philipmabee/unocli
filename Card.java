@@ -134,6 +134,33 @@ public class Card {
 		}
 	}
 
+	public void changeCardColor(Color color) {
+		StringBuilder s = new StringBuilder(cardVal);
+		switch(color) {
+			case Color.BLUE:
+				s.setCharAt(0, 'b');
+				cardVal = s.toString();
+				break;
+			case Color.YELLOW:
+				s.setCharAt(0, 'y');
+				cardVal = s.toString();
+				break;
+			case Color.GREEN:
+				s.setCharAt(0, 'g');
+				cardVal = s.toString();
+				break;
+			case Color.RED:
+				s.setCharAt(0, 'r');
+				cardVal = s.toString();
+				break;
+			case Color.WILD:
+				s.setCharAt(0, 'w');
+				cardVal = s.toString();
+				break;
+		}
+	}
+
+
 	Card (byte num, Color color) {
 		switch (color) {
 			case BLUE:
