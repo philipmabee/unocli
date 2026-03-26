@@ -4,6 +4,7 @@ class GameLogic {
 
 	private static int currHandTrunIndex = 0;
 	private static boolean handTurnDirection = true; // true incresed currHandTurnIndex. false does the opposite
+	private static int cardDrawCounter = 0; // cards the hand needs to draw
 
 	public static void printCurrentCardInfo(DiscardPile discardPile) {
 		UserInput.printTextWithColor("the current card is ", UserInput.Color.WHITE);
@@ -123,6 +124,21 @@ class GameLogic {
 	}
 	// TODO: move hands to GameLogic
 
+	public static int getCardDrawCounter() {
+		return cardDrawCounter;
+	}
+
+	public static void addToCardDrawCounter(int x) {
+		if (x < 1) {
+			throw new Error("the value passed in 'addToCardDrawCounter' must be greater than 0");
+		}
+		cardDrawCounter += x;
+	}
+
+	public static void resetCardDrawCounter() {
+		cardDrawCounter = 0;
+	}
+
 	public static void handleCardSideEffect(Card card, int numOfHands, Hand hand, DiscardPile discardPile) {
 		switch (card.getCardSpecialType()) {
 			case Card.SpecialType.SKIP:
@@ -132,8 +148,10 @@ class GameLogic {
 				handTurnDirection = !handTurnDirection;
 				break;
 			case Card.SpecialType.DRAW2:
+				cardDrawCounter += 2;
 				break;
 			case Card.SpecialType.DRAW4:
+				cardDrawCounter += 4;
 				break;
 			case Card.SpecialType.NONE:
 				break;
@@ -144,6 +162,9 @@ class GameLogic {
 				if (hand.getName() == "You") {
 					Card.Color newColor = getNewColorFromPlayer();
 					discardPile.getCard(discardPile.getSize() - 1).changeCardColor(newColor);
+				}
+				else {
+					// TODO: handle bot wild card
 				}
 				break;
 			default:
