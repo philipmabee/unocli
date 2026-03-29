@@ -134,30 +134,39 @@ public class Card {
 		}
 	}
 
-	public void changeCardColor(Color color) {
+	public void changeCardColor(Color color, Hand hand) {
 		StringBuilder s = new StringBuilder(cardVal);
+		String colorName = "";
+
 		switch(color) {
 			case Color.BLUE:
 				s.setCharAt(0, 'b');
 				cardVal = s.toString();
+				colorName = "blue";
 				break;
 			case Color.YELLOW:
 				s.setCharAt(0, 'y');
 				cardVal = s.toString();
+				colorName = "yellow";
 				break;
 			case Color.GREEN:
 				s.setCharAt(0, 'g');
 				cardVal = s.toString();
+				colorName = "green";
 				break;
 			case Color.RED:
 				s.setCharAt(0, 'r');
 				cardVal = s.toString();
+				colorName = "red";
 				break;
 			case Color.WILD:
 				s.setCharAt(0, 'w');
 				cardVal = s.toString();
+				colorName = "wild";
 				break;
 		}
+
+		UserInput.printTextWithColor(hand.getName() + " changed the color to " + colorName + "\n", UserInput.Color.WHITE);
 	}
 
 

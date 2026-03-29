@@ -1,3 +1,4 @@
+import java.util.Random;
 import java.util.Vector;
 
 class GameLogic {
@@ -161,10 +162,34 @@ class GameLogic {
 			case Card.Color.WILD:
 				if (hand.getName() == "You") {
 					Card.Color newColor = getNewColorFromPlayer();
-					discardPile.getCard(discardPile.getSize() - 1).changeCardColor(newColor);
+					discardPile.getCard(discardPile.getSize() - 1).changeCardColor(newColor, hand);
 				}
 				else {
-					// TODO: handle bot wild card
+					Random rand = new Random();
+					int randNum = rand.nextInt(1, 5);
+					switch (randNum) { // TODO: make a 50/50 chanse of making color the most color in hand
+						case 1: {
+							Card.Color newColor = Card.Color.BLUE;
+							discardPile.getCard(discardPile.getSize() - 1).changeCardColor(newColor, hand);
+							break;
+						}
+						case 2: {
+							Card.Color newColor = Card.Color.YELLOW;
+							discardPile.getCard(discardPile.getSize() - 1).changeCardColor(newColor, hand);
+							break;
+						}
+						case 3: {
+							Card.Color newColor = Card.Color.GREEN;
+							discardPile.getCard(discardPile.getSize() - 1).changeCardColor(newColor, hand);
+							break;
+						}
+						case 4: {
+							Card.Color newColor = Card.Color.RED;
+							discardPile.getCard(discardPile.getSize() - 1).changeCardColor(newColor, hand);
+							break;
+						}
+
+					}
 				}
 				break;
 			default:
