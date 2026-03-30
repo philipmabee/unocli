@@ -7,33 +7,22 @@ public class Main {
 		printStartText();
 
 		UserInput.printTextWithColor("Welcome to unocli!\n", UserInput.Color.CYAN);
-		// UserInput.printTextWithColor("press h for help\n\n" , UserInput.Color.MAGENTA);
 
 		int numOfBots = getNumOfBots();
-
-		Deck deck = new Deck();
-		DiscardPile discardPile = new DiscardPile(deck);
-
-		Hand[] hands = new Hand[numOfBots + 1];
-		Hand player = new Hand("You", deck, discardPile);
-
-		hands[0] = player;
-		for (int i = 1; i <= numOfBots; i++) {
-			hands[i] = new Hand("Bot" + i, deck, discardPile);
-		}
+		GameLogic.setupGame(numOfBots);
 
 		UserInput.clearScreen();
 		UserInput.printTextWithColor("press h for help\n\n" , UserInput.Color.MAGENTA);
-		GameLogic.printCurrentCardInfo(discardPile);
+		GameLogic.printCurrentCardInfo();
 
 		while (true) {
-			if (GameLogic.getCurrHandTurnName(hands).equals("You")) {
-				handlePlayersTurn(player, discardPile, hands);
+			if (GameLogic.getCurrHandTurnName().equals("You")) {
+				handlePlayersTurn();
 			} else {
-				handleBotsTurn(hands[GameLogic.getCurrHandTurn()], hands.length);
+				handleBotsTurn(GameLogic.getHands()[GameLogic.getCurrHandTurn()], GameLogic.getHands().length);
 			}
 
-			GameLogic.changeHandTurn(hands.length);
+			GameLogic.changeHandTurn();
 		}
 	}
 
@@ -119,13 +108,13 @@ public class Main {
 		UserInput.printTextWithColor("           quit\n\n", UserInput.Color.CYAN);
 	}
 
-	public static void handlePlayersTurn(Hand player, DiscardPile discardPile, Hand[] hands) {
+	public static void handlePlayersTurn() {
 		String[] userInput;
 		while (true) {
 
 			if (GameLogic.getCardDrawCounter() > 0) {
 				System.out.println("yoooooo");
-				handlePlayerDrawCounterTurn(player, discardPile, hands.length);
+				handlePlayerDrawCounterTurn();
 				return;
 			}
 
@@ -143,24 +132,24 @@ public class Main {
 				case "list":
 				case "l": // list cards
 					if (UserInput.AssertArgC(userInput, 1) != 0) break;
-					player.printContents();
+					GameLogic.getPlayer().printContents();
 					break;
 
 				case "n":
 					if (UserInput.AssertArgC(userInput, 1) != 0) break;
-					player.printContentsWithIndex();
+					GameLogic.getPlayer().printContentsWithIndex();
 					break;
 
 				case "play":
 				case "p":
-					if (GameLogic.playCard(player, discardPile, userInput, hands.length) != 0) return;
+					if (GameLogic.playCard(userInput) != 0) return;
 					break;
 
 				case "draw":
 				case "d":
 					if (UserInput.AssertArgC(userInput, 1) != 0) break;
-					player.drawFromDeck();
-					UserInput.printTextWithColor(player.getName() + " drew a card\n", UserInput.Color.WHITE);
+					GameLogic.getPlayer().drawFromDeck();
+					UserInput.printTextWithColor(GameLogic.getPlayer().getName() + " drew a card\n", UserInput.Color.WHITE);
 
 					// if (player.getCard(player.getSize() - 1)) { // if canPlayCard then ask if want to play that card
 					//
@@ -170,7 +159,7 @@ public class Main {
 				case "info":
 				case "i":
 					if (UserInput.AssertArgC(userInput, 1) != 0) break;
-					GameLogic.printGameInfo(discardPile, hands);
+					GameLogic.printGameInfo();
 					break;
 
 				case "clear":
@@ -189,9 +178,9 @@ public class Main {
 
 				case "debug":
 					UserInput.changeColor(UserInput.Color.GREEN);
-					for (int i = 0; i < hands.length; i++) {
-						UserInput.printTextWithColor(hands[i].getName() + ": ", UserInput.Color.GREEN);
-						hands[i].printContents();
+					for (int i = 0; i < GameLogic.getHands().length; i++) {
+						UserInput.printTextWithColor(GameLogic.getHands()[i].getName() + ": ", UserInput.Color.GREEN);
+						GameLogic.getHands()[i].printContents();
 					}
 					break;
 
@@ -233,9 +222,9 @@ public class Main {
 		bot.playCard(playableCards.get(randNum), numOfHands);
 	}
 
-	public static void handlePlayerDrawCounterTurn(Hand player, DiscardPile discardPile, int numOfHands) {
+	public static void handlePlayerDrawCounterTurn() {
 		Card.SpecialType drawCardType;
-		if (discardPile.getCard(discardPile.getSize() - 1).getCardSpecialType() == Card.SpecialType.DRAW2)
+		if (GameLogic.getDiscardPile().getCard(GameLogic.getDiscardPile().getSize() - 1).getCardSpecialType() == Card.SpecialType.DRAW2)
 			drawCardType = Card.SpecialType.DRAW2;
 		else
 			drawCardType = Card.SpecialType.DRAW4;
@@ -254,8 +243,8 @@ public class Main {
 					if (UserInput.AssertArgC(userInput, 1) != 0) continue;
 					for (int i = 0; i < GameLogic.getCardDrawCounter(); i++) {
 						if (UserInput.AssertArgC(userInput, 1) != 0) break;
-						player.drawFromDeck();
-						UserInput.printTextWithColor(player.getName() + " drew a card\n", UserInput.Color.WHITE);
+						GameLogic.getPlayer().drawFromDeck();
+						UserInput.printTextWithColor(GameLogic.getPlayer().getName() + " drew a card\n", UserInput.Color.WHITE);
 					}
 
 					GameLogic.resetCardDrawCounter();
@@ -286,26 +275,26 @@ public class Main {
 						}
 
 						if (j > 0) {
-							Card lastCardPlayed = discardPile.getCard(discardPile.getSize() - 1);
-							Card currCardPlaying = player.getCard(cardIndex[j] - sub);
+							Card lastCardPlayed = GameLogic.getDiscardPile().getCard(GameLogic.getDiscardPile().getSize() - 1);
+							Card currCardPlaying = GameLogic.getPlayer().getCard(cardIndex[j] - sub);
 
 							boolean typesSame = lastCardPlayed.getCardSpecialType() == currCardPlaying.getCardSpecialType();
 
 							if (!typesSame) {
-								UserInput.printTextWithColor("cannot play " + player.getCard(cardIndex[j] - sub).getCardVal() + "\n", UserInput.Color.RED);
+								UserInput.printTextWithColor("cannot play " + GameLogic.getPlayer().getCard(cardIndex[j] - sub).getCardVal() + "\n", UserInput.Color.RED);
 								break;
 							}
 						}
 
-						switch (player.playCard(cardIndex[j] - sub, numOfHands)) {
+						switch (GameLogic.getPlayer().playCard(cardIndex[j] - sub, GameLogic.getNumOfHands())) {
 							case 1:
-								UserInput.printTextWithColor("cannot play " + player.getCard(cardIndex[j] - sub).getCardVal() + "\n", UserInput.Color.RED);
+								UserInput.printTextWithColor("cannot play " + GameLogic.getPlayer().getCard(cardIndex[j] - sub).getCardVal() + "\n", UserInput.Color.RED);
 								break;
 							case 2:
 								UserInput.printTextWithColor("Invalid card number '" + userInput[j + 1] + "'" + "\n", UserInput.Color.RED);
 								break;
 							default:
-								GameLogic.addToCardDrawCounter((discardPile.getCard(discardPile.getSize() - 1).getCardSpecialType() == Card.SpecialType.DRAW2) ? 2 : 4);
+								GameLogic.addToCardDrawCounter((GameLogic.getDiscardPile().getCard(GameLogic.getDiscardPile().getSize() - 1).getCardSpecialType() == Card.SpecialType.DRAW2) ? 2 : 4);
 								vec.add(cardIndex[j]);
 								break;
 						}

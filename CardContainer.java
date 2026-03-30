@@ -101,6 +101,11 @@ public class CardContainer {
 		return cards.get(0);
 	}
 
+	// TODO: use this funciton
+	public Card getLastCard() {
+		return cards.get(cards.size() - 1);
+	}
+
 	public void removeFirstCard() {
 		cards.removeFirst();
 	}

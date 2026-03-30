@@ -2,32 +2,94 @@ import java.util.Random;
 import java.util.Vector;
 
 class GameLogic {
-
 	private static int currHandTrunIndex = 0;
 	private static boolean handTurnDirection = true; // true incresed currHandTurnIndex. false does the opposite
 	private static int cardDrawCounter = 0; // cards the hand needs to draw
 
-	public static void printCurrentCardInfo(DiscardPile discardPile) {
+	private static Deck deck;
+	private static DiscardPile discardPile;
+	private static Hand player;
+	private static Hand[] hands;
+
+
+	/**
+	 * creates the game deck, game discard pile, player, and the bots.<br>
+	 * This must bw called before starting the game.
+	 */
+	public static void setupGame(int numOfBots) {
+		deck = new Deck();
+		discardPile = new DiscardPile(deck);
+		hands = new Hand[numOfBots + 1];
+
+		player = new Hand("You", deck, discardPile);
+
+		hands[0] = player;
+		for (int i = 1; i <= numOfBots; i++) {
+			hands[i] = new Hand("Bot" + i, deck, discardPile);
+		}
+	}
+	
+	public static int getCardDrawCounter() {
+		return cardDrawCounter;
+	}
+
+	public static Deck getDeck() {
+		if (deck == null) {
+			throw new Error("Must call setupGame to access the gameDeck");
+		}
+		return deck;
+	}
+
+	public static DiscardPile getDiscardPile() {
+		if (discardPile == null) {
+			throw new Error("Must call setupGame to access the gameDiscardPile");
+		}
+		return discardPile;
+	}
+
+	public static Hand[] getHands() {
+		if (hands == null) {
+			throw new Error("Must call setupGame to access the hands");
+		}
+		return hands;
+	}
+
+	public static Hand getPlayer() {
+		if (player == null) {
+			throw new Error("Must call setupGame to access the player");
+		}
+		return player;
+	}
+
+	public static int getNumOfHands() {
+		if (hands == null) {
+			throw new Error("Must call setupGame to get the num of hands");
+		}
+		return hands.length;
+	}
+
+	public static void printCurrentCardInfo() {
 		UserInput.printTextWithColor("the current card is ", UserInput.Color.WHITE);
-		discardPile.getCard(discardPile.getSize() - 1).printCardWithColor();
+		getDiscardPile().getLastCard().printCardWithColor();
 		System.out.println();
 	}
 
-	public static void printNumOfCardsInHands(Hand[] hands) {
+	public static void printNumOfCardsInHands() {
 		UserInput.printTextWithColor("Cards in hand:\n", UserInput.Color.WHITE);
-		for(int i = 0; i < hands.length; i++) {
-			UserInput.printTextWithColor("  " + String.format("%-7s",hands[i].getName() + ": ") + hands[i].getSize() +"\n", UserInput.Color.WHITE);
+		for(int i = 0; i < getNumOfHands(); i++) {
+			UserInput.printTextWithColor("  " + String.format("%-7s",getHands()[i].getName() + ": ") + getHands()[i].getSize() +"\n", UserInput.Color.WHITE);
 		}
 	}
 
-	public static void printGameInfo(DiscardPile discardPile, Hand hands[]) {
-		printCurrentCardInfo(discardPile);
-		printNumOfCardsInHands(hands);
+	public static void printGameInfo() {
+		printCurrentCardInfo();
+		printNumOfCardsInHands();
 	}
 
 	// plays selected card(s) (will only play card if card is valid)
 	// returns the ammount of cards successfully played
-	public static int playCard(Hand player, DiscardPile discardPile, String[] userInput, int numOfHands) {
+	// TODO: replace variables with getters here
+	public static int playCard(String[] userInput) {
 		if (UserInput.AssertMinArgC(userInput, 2) != 0) return 0;
 
 		int[] cardIndex = new int[userInput.length - 1];
@@ -66,7 +128,7 @@ class GameLogic {
 			}
 
 
-			switch (player.playCard(cardIndex[j] - sub, numOfHands)) {
+			switch (player.playCard(cardIndex[j] - sub, getNumOfHands())) {
 				case 1:
 					UserInput.printTextWithColor("cannot play " + player.getCard(cardIndex[j] - sub).getCardVal() + "\n", UserInput.Color.RED);
 					break;
@@ -85,31 +147,31 @@ class GameLogic {
 		return currHandTrunIndex;
 	}
 
-	public static int getNextHandTurn(int numOfHands) {
+	public static int getNextHandTurn() {
 		if (handTurnDirection) {
-			if (currHandTrunIndex == numOfHands - 1) {
+			if (currHandTrunIndex == getNumOfHands() - 1) {
 				return 0;
 			}
 			return currHandTrunIndex + 1;
 		}
 		else {
 			if (currHandTrunIndex == 0) {
-				return numOfHands - 1;
+				return getNumOfHands() - 1;
 			}
 			return currHandTrunIndex - 1;
 		}
 	}
 
-	public static String getCurrHandTurnName(Hand[] hands) {
-		return hands[currHandTrunIndex].getName();
+	public static String getCurrHandTurnName() {
+		return getHands()[currHandTrunIndex].getName();
 	}
 
 	/**
 	 * changes the current turn to the next one depending on direction going.
 	*/
-	public static void changeHandTurn(int numOfHands) {
+	public static void changeHandTurn() {
 		if (handTurnDirection) {
-			if (currHandTrunIndex == numOfHands - 1) {
+			if (currHandTrunIndex == getNumOfHands() - 1) {
 				currHandTrunIndex = 0;
 				return;
 			}
@@ -117,16 +179,11 @@ class GameLogic {
 		}
 		else {
 			if (currHandTrunIndex == 0) {
-				currHandTrunIndex = numOfHands - 1;
+				currHandTrunIndex = getNumOfHands() - 1;
 				return;
 			}
 			currHandTrunIndex --;
 		}
-	}
-	// TODO: move hands to GameLogic
-
-	public static int getCardDrawCounter() {
-		return cardDrawCounter;
 	}
 
 	public static void addToCardDrawCounter(int x) {
@@ -140,10 +197,13 @@ class GameLogic {
 		cardDrawCounter = 0;
 	}
 
-	public static void handleCardSideEffect(Card card, int numOfHands, Hand hand, DiscardPile discardPile) {
+	// TODO: replace variables with getters here
+	public static void handleCardSideEffect(Card card) {
+		Hand currHand = getHands()[getCurrHandTurn()];
+
 		switch (card.getCardSpecialType()) {
 			case Card.SpecialType.SKIP:
-				changeHandTurn(numOfHands);
+				changeHandTurn();
 				break;
 			case Card.SpecialType.REVERSE:
 				handTurnDirection = !handTurnDirection;
@@ -160,9 +220,9 @@ class GameLogic {
 
 		switch (card.getCardColor()) {
 			case Card.Color.WILD:
-				if (hand.getName() == "You") {
+				if (currHand.getName() == "You") {
 					Card.Color newColor = getNewColorFromPlayer();
-					discardPile.getCard(discardPile.getSize() - 1).changeCardColor(newColor, hand);
+					discardPile.getCard(discardPile.getSize() - 1).changeCardColor(newColor, currHand);
 				}
 				else {
 					Random rand = new Random();
@@ -170,22 +230,22 @@ class GameLogic {
 					switch (randNum) { // TODO: make a 50/50 chanse of making color the most color in hand
 						case 1: {
 							Card.Color newColor = Card.Color.BLUE;
-							discardPile.getCard(discardPile.getSize() - 1).changeCardColor(newColor, hand);
+							discardPile.getCard(discardPile.getSize() - 1).changeCardColor(newColor, currHand);
 							break;
 						}
 						case 2: {
 							Card.Color newColor = Card.Color.YELLOW;
-							discardPile.getCard(discardPile.getSize() - 1).changeCardColor(newColor, hand);
+							discardPile.getCard(discardPile.getSize() - 1).changeCardColor(newColor, currHand);
 							break;
 						}
 						case 3: {
 							Card.Color newColor = Card.Color.GREEN;
-							discardPile.getCard(discardPile.getSize() - 1).changeCardColor(newColor, hand);
+							discardPile.getCard(discardPile.getSize() - 1).changeCardColor(newColor, currHand);
 							break;
 						}
 						case 4: {
 							Card.Color newColor = Card.Color.RED;
-							discardPile.getCard(discardPile.getSize() - 1).changeCardColor(newColor, hand);
+							discardPile.getCard(discardPile.getSize() - 1).changeCardColor(newColor, currHand);
 							break;
 						}
 
@@ -217,4 +277,5 @@ class GameLogic {
 		}
 	}
 
+	private GameLogic() {}
 }

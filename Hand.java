@@ -18,7 +18,7 @@ public class Hand extends CardContainer {
 			while (discardPile.getSize() > 1) {
 				Card currCard = discardPile.getCard(1);
 				if (currCard.getCardSpecialType() == Card.SpecialType.DRAW4 || (currCard.getCardSpecialType() == Card.SpecialType.NONE && currCard.getCardNumber() == -1)) {
-					System.out.println("THE FUNCTION IS RUNNING"); // TODO: test this
+					System.out.println("THE FUNCTION IS RUNNING");
 					System.out.println("card was: " + currCard.getCardVal());
 					System.out.println("card is now: " + new Card(currCard.getCardSpecialType(), Card.Color.WILD).getCardVal() + "\n\n");
 					deck.addCard(new Card(currCard.getCardSpecialType(), Card.Color.WILD));
@@ -38,7 +38,6 @@ public class Hand extends CardContainer {
 		deck.removeFirstCard();
 	}
 
-	// TODO: make this return an enum
 	/**
 	 * gets the card at index and puts it into discard pile
 	 * @return
@@ -59,7 +58,7 @@ public class Hand extends CardContainer {
 			discardPile.addCard(getCard(index));
 			removeCardAtIndex(index);
 
-			GameLogic.handleCardSideEffect(discardPile.getCard(discardPile.getSize() -1), numOfHands, this, discardPile);
+			GameLogic.handleCardSideEffect(discardPile.getCard(discardPile.getSize() -1));
 
 			return 0;
 		}
