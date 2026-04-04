@@ -113,7 +113,6 @@ public class Main {
 		while (true) {
 
 			if (GameLogic.getCardDrawCounter() > 0) {
-				System.out.println("yoooooo");
 				handlePlayerDrawCounterTurn();
 				return;
 			}
@@ -194,6 +193,12 @@ public class Main {
 	}
 
 	public static void handleBotsTurn(Hand bot, int numOfHands) {
+
+		if (GameLogic.getCardDrawCounter() > 0) {
+			handleBotDrawCounterTurn(bot);
+			return;
+		}
+
 		Vector<Integer> playableCards = new Vector<>();
 
 		// add playable card index
@@ -220,6 +225,35 @@ public class Main {
 		int randNum = rand.nextInt(playableCards.size() - 1);
 
 		bot.playCard(playableCards.get(randNum), numOfHands);
+	}
+
+	public static void handleBotDrawCounterTurn(Hand bot) {
+		Card.SpecialType drawCardType;
+		if (GameLogic.getDiscardPile().getCard(GameLogic.getDiscardPile().getSize() - 1).getCardSpecialType() == Card.SpecialType.DRAW2)
+			drawCardType = Card.SpecialType.DRAW2;
+		else
+			drawCardType = Card.SpecialType.DRAW4;
+
+		Vector<Integer> cardIndexesPlaying = new Vector<Integer>();
+
+		for (int i = 0; i < bot.getSize(); i++) {
+			if (bot.getCard(i).getCardSpecialType() == drawCardType) {
+				cardIndexesPlaying.add(i);
+			}
+		}
+
+		if (cardIndexesPlaying.size() == 0){
+			for (int i = 0; i < GameLogic.getCardDrawCounter(); i++) {
+				bot.drawFromDeck();
+				UserInput.printTextWithColor(bot.getName() + " drew a card\n", UserInput.Color.WHITE);
+			}
+			GameLogic.resetCardDrawCounter();
+			return;
+		}
+
+		for (int i = 0, j = 0; i < cardIndexesPlaying.size(); i++, j++) {
+			bot.playCard(cardIndexesPlaying.get(0) - j, GameLogic.getNumOfHands());
+		}
 	}
 
 	public static void handlePlayerDrawCounterTurn() {
@@ -251,57 +285,26 @@ public class Main {
 					return;
 
 				case "p": {
-					if (UserInput.AssertMinArgC(userInput, 2) != 0) continue;
-					int[] cardIndex = new int[userInput.length - 1];
-
-					int i = 1;
-					try {
-						while (i < userInput.length) {
-							cardIndex[i - 1] = Integer.parseInt(userInput[i]) - 1; // because printed val starts at 1
-							i++;
+					if (UserInput.AssertArgC(userInput, 1) != 0) continue;
+					Vector<Integer> cardIndexesPlaying = new Vector<Integer>();
+					
+					for (int i = 0; i < GameLogic.getPlayer().getSize(); i++) {
+						if (GameLogic.getPlayer().getCard(i).getCardSpecialType() == drawCardType) {
+							cardIndexesPlaying.add(i);
 						}
+					}
 
-					} catch(NumberFormatException e) {
-						UserInput.printTextWithColor("'" + userInput[i] + "' is not a number\n", UserInput.Color.RED);
+					if (cardIndexesPlaying.size() == 0){
+						UserInput.printTextWithColor("You can't play any cards\n", UserInput.Color.WHITE);
 						continue;
 					}
 
-					Vector<Integer> vec = new Vector<>();
-
-					for (int j = 0; j < i - 1; j++) {
-						int sub = 0;
-						for (int k = 0; k < vec.size(); k++) {
-							if (vec.get(k) < cardIndex[j]) sub ++;
-						}
-
-						if (j > 0) {
-							Card lastCardPlayed = GameLogic.getDiscardPile().getCard(GameLogic.getDiscardPile().getSize() - 1);
-							Card currCardPlaying = GameLogic.getPlayer().getCard(cardIndex[j] - sub);
-
-							boolean typesSame = lastCardPlayed.getCardSpecialType() == currCardPlaying.getCardSpecialType();
-
-							if (!typesSame) {
-								UserInput.printTextWithColor("cannot play " + GameLogic.getPlayer().getCard(cardIndex[j] - sub).getCardVal() + "\n", UserInput.Color.RED);
-								break;
-							}
-						}
-
-						switch (GameLogic.getPlayer().playCard(cardIndex[j] - sub, GameLogic.getNumOfHands())) {
-							case 1:
-								UserInput.printTextWithColor("cannot play " + GameLogic.getPlayer().getCard(cardIndex[j] - sub).getCardVal() + "\n", UserInput.Color.RED);
-								break;
-							case 2:
-								UserInput.printTextWithColor("Invalid card number '" + userInput[j + 1] + "'" + "\n", UserInput.Color.RED);
-								break;
-							default:
-								GameLogic.addToCardDrawCounter((GameLogic.getDiscardPile().getCard(GameLogic.getDiscardPile().getSize() - 1).getCardSpecialType() == Card.SpecialType.DRAW2) ? 2 : 4);
-								vec.add(cardIndex[j]);
-								break;
-						}
+					for (int i = 0, j = 0; i < cardIndexesPlaying.size(); i++, j++) {
+						GameLogic.getPlayer().playCard(cardIndexesPlaying.get(0) - j, GameLogic.getNumOfHands());
 					}
-					break;
+
+					return;
 				}
-				// }
 
 				case "q":
 					 System.exit(0);
