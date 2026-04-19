@@ -258,7 +258,7 @@ class GameLogic {
 	}
 
 	private static Card.Color getNewColorFromPlayer() {
-		UserInput.printTextWithColor("What would you like the color to be? (r, b, g, y)\n", UserInput.Color.WHITE);
+		UserInput.printTextWithColor("What would you like the color to be? (r, b, g, y)\n", UserInput.Color.MAGENTA);
 		while (true) {
 			String userInput = UserInput.getUserInput("> ");
 			switch (userInput) {

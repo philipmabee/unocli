@@ -265,7 +265,7 @@ public class Main {
 
 		UserInput.printTextWithColor("press d to draw " + GameLogic.getCardDrawCounter() + " cards or play another +" + 
 				((drawCardType == Card.SpecialType.DRAW2) ? "2" : "4") + " card with p\n",
-				UserInput.Color.WHITE);
+				UserInput.Color.MAGENTA);
 
 
 		while (true) {
