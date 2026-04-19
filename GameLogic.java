@@ -257,6 +257,25 @@ class GameLogic {
 		}
 	}
 
+	/** 
+	 * @return 0 current hand sill has cards.<br>
+	 * 1 if the player won.<br>
+	 * 2 if a bot wins
+	*/
+	public static int checkForWin() {
+		if (hands[getCurrHandTurn()].getSize() != 0) {
+			return 0;
+		}
+		else if (getCurrHandTurnName().equals("You")) {
+			return 1;
+		} else {
+			return 2;
+		}
+	}
+
+
+
+
 	private static Card.Color getNewColorFromPlayer() {
 		UserInput.printTextWithColor("What would you like the color to be? (r, b, g, y)\n", UserInput.Color.MAGENTA);
 		while (true) {

@@ -22,6 +22,18 @@ public class Main {
 				handleBotsTurn(GameLogic.getHands()[GameLogic.getCurrHandTurn()], GameLogic.getHands().length);
 			}
 
+			switch (GameLogic.checkForWin()) {
+				case 1:
+					printWinText();
+					break;
+
+				case 2:
+					printLoseText();
+					break;
+				default:
+					break;
+			}
+
 			GameLogic.changeHandTurn();
 		}
 	}
@@ -107,6 +119,24 @@ public class Main {
 		UserInput.printTextWithColor(":", UserInput.Color.WHITE);
 		UserInput.printTextWithColor("           quit\n\n", UserInput.Color.CYAN);
 	}
+
+	public static void printWinText() {
+		UserInput.printTextWithColor("   .    .    ...   ..   .     ..      .  ....  ..   . ", UserInput.Color.BLUE);
+		UserInput.printTextWithColor("    .  .   ..   .  ..   .     ..      .   ..   ...  . ", UserInput.Color.BLUE);
+		UserInput.printTextWithColor("     ..    ..   .  ..   .     ..      .   ..   .. . . ", UserInput.Color.BLUE);
+		UserInput.printTextWithColor("     ..    ..   .  ..   .     ..  ..  .   ..   ..  .. ", UserInput.Color.BLUE);
+		UserInput.printTextWithColor("     ..      ...     ...        ..  ..   ....  ..   . ", UserInput.Color.BLUE);
+	}
+
+	public static void printLoseText() {
+		UserInput.printTextWithColor("   .    .    ...   ..   .     ..       ...    ...   .... ", UserInput.Color.BLUE);
+		UserInput.printTextWithColor("    .  .   ..   .  ..   .     ..     ..   .  .      ..   ", UserInput.Color.BLUE);
+		UserInput.printTextWithColor("     ..    ..   .  ..   .     ..     ..   .   ..    .... ", UserInput.Color.BLUE);
+		UserInput.printTextWithColor("     ..    ..   .  ..   .     ..     ..   .     .   ..   ", UserInput.Color.BLUE);
+		UserInput.printTextWithColor("     ..      ...     ...      ....     ...   ...    .... ", UserInput.Color.BLUE);
+		System.out.println();
+	}
+
 
 	public static void handlePlayersTurn() {
 		String[] userInput;
