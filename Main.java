@@ -25,10 +25,12 @@ public class Main {
 			switch (GameLogic.checkForWin()) {
 				case 1:
 					printWinText();
+					GameLogic.handlePostGame();
 					break;
 
 				case 2:
 					printLoseText();
+					GameLogic.handlePostGame();
 					break;
 				default:
 					break;
@@ -121,19 +123,21 @@ public class Main {
 	}
 
 	public static void printWinText() {
-		UserInput.printTextWithColor("   .    .    ...   ..   .     ..      .  ....  ..   . ", UserInput.Color.BLUE);
-		UserInput.printTextWithColor("    .  .   ..   .  ..   .     ..      .   ..   ...  . ", UserInput.Color.BLUE);
-		UserInput.printTextWithColor("     ..    ..   .  ..   .     ..      .   ..   .. . . ", UserInput.Color.BLUE);
-		UserInput.printTextWithColor("     ..    ..   .  ..   .     ..  ..  .   ..   ..  .. ", UserInput.Color.BLUE);
-		UserInput.printTextWithColor("     ..      ...     ...        ..  ..   ....  ..   . ", UserInput.Color.BLUE);
+		UserInput.clearScreen();
+		UserInput.printTextWithColor("   .    .    ...   ..   .     ..      .  ....  ..   . \n", UserInput.Color.BLUE);
+		UserInput.printTextWithColor("    .  .   ..   .  ..   .     ..      .   ..   ...  . \n", UserInput.Color.BLUE);
+		UserInput.printTextWithColor("     ..    ..   .  ..   .     ..      .   ..   .. . . \n", UserInput.Color.BLUE);
+		UserInput.printTextWithColor("     ..    ..   .  ..   .     ..  ..  .   ..   ..  .. \n", UserInput.Color.BLUE);
+		UserInput.printTextWithColor("     ..      ...     ...        ..  ..   ....  ..   . \n", UserInput.Color.BLUE);
 	}
 
 	public static void printLoseText() {
-		UserInput.printTextWithColor("   .    .    ...   ..   .     ..       ...    ...   .... ", UserInput.Color.BLUE);
-		UserInput.printTextWithColor("    .  .   ..   .  ..   .     ..     ..   .  .      ..   ", UserInput.Color.BLUE);
-		UserInput.printTextWithColor("     ..    ..   .  ..   .     ..     ..   .   ..    .... ", UserInput.Color.BLUE);
-		UserInput.printTextWithColor("     ..    ..   .  ..   .     ..     ..   .     .   ..   ", UserInput.Color.BLUE);
-		UserInput.printTextWithColor("     ..      ...     ...      ....     ...   ...    .... ", UserInput.Color.BLUE);
+		UserInput.clearScreen();
+		UserInput.printTextWithColor("   .    .    ...   ..   .     ..       ...    ...   .... \n", UserInput.Color.BLUE);
+		UserInput.printTextWithColor("    .  .   ..   .  ..   .     ..     ..   .  .      ..   \n", UserInput.Color.BLUE);
+		UserInput.printTextWithColor("     ..    ..   .  ..   .     ..     ..   .   ..    .... \n", UserInput.Color.BLUE);
+		UserInput.printTextWithColor("     ..    ..   .  ..   .     ..     ..   .     .   ..   \n", UserInput.Color.BLUE);
+		UserInput.printTextWithColor("     ..      ...     ...      ....     ...   ...    .... \n", UserInput.Color.BLUE);
 		System.out.println();
 	}
 
@@ -353,7 +357,13 @@ public class Main {
 		int numOfBots;
 		while (true) {
 			try {
-				numOfBots = Integer.parseInt(UserInput.getUserInput("> "));
+				String userInput = UserInput.getUserInput("> ");
+
+				if (userInput.toLowerCase().equals("q")) {
+					System.exit(0);
+				}
+
+				numOfBots = Integer.parseInt(userInput);
 			} catch (NumberFormatException e) {
 				UserInput.printTextWithColor("invalid input.\n", UserInput.Color.RED);
 				continue;

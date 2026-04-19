@@ -257,25 +257,6 @@ class GameLogic {
 		}
 	}
 
-	/** 
-	 * @return 0 current hand sill has cards.<br>
-	 * 1 if the player won.<br>
-	 * 2 if a bot wins
-	*/
-	public static int checkForWin() {
-		if (hands[getCurrHandTurn()].getSize() != 0) {
-			return 0;
-		}
-		else if (getCurrHandTurnName().equals("You")) {
-			return 1;
-		} else {
-			return 2;
-		}
-	}
-
-
-
-
 	private static Card.Color getNewColorFromPlayer() {
 		UserInput.printTextWithColor("What would you like the color to be? (r, b, g, y)\n", UserInput.Color.MAGENTA);
 		while (true) {
@@ -295,6 +276,56 @@ class GameLogic {
 			}
 		}
 	}
+
+
+	/** 
+	 * @return 0 current hand sill has cards.<br>
+	 * 1 if the player won.<br>
+	 * 2 if a bot wins
+	*/
+	public static int checkForWin() {
+		if (hands[getCurrHandTurn()].getSize() != 0) {
+			return 0;
+		}
+		else if (getCurrHandTurnName().equals("You")) {
+			return 1;
+		} else {
+			return 2;
+		}
+	}
+
+
+	public static void handlePostGame() {
+		UserInput.printTextWithColor("Would you like to play again? (y/n)\n", UserInput.Color.WHITE);
+		String userInput = UserInput.getUserInput("> ");
+		
+		switch (userInput.toLowerCase()) {
+			case "y":
+				UserInput.clearScreen();
+				int numOfBots = Main.getNumOfBots(); // I'm sorry
+
+				// reset variables
+				currHandTrunIndex = 0;
+				handTurnDirection = true;
+				cardDrawCounter = 0;
+
+				GameLogic.setupGame(numOfBots);
+				break;
+
+			case "q":
+			case "n":
+				System.exit(0);
+				break;
+
+			default:
+				UserInput.printTextWithColor("invalid Input", UserInput.Color.RED);
+				break;
+		}
+	}
+
+
+
+
 
 	private GameLogic() {}
 }
