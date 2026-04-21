@@ -305,11 +305,12 @@ class GameLogic {
 				int numOfBots = Main.getNumOfBots(); // I'm sorry
 
 				// reset variables
-				currHandTrunIndex = 0;
+				currHandTrunIndex = -1; // Setting to -1 because it will be incremented in main function
 				handTurnDirection = true;
 				cardDrawCounter = 0;
 
-				GameLogic.setupGame(numOfBots);
+				setupGame(numOfBots);
+				GameLogic.printCurrentCardInfo();
 				break;
 
 			case "q":
